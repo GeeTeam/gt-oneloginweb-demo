@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta > 生产上有https访问的，会导致上报的referer为空，移动运营商会去校验请求referer是否进行备案-->
+    <!-- step2: 添加meta -->
+    <meta content="always" name="referrer">
+    <title>H5 一键登录demo</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+            flex-direction: column;
+            height: 300px;
+        }
+        p {
+            font-size: 14px;
+        }
+    </style>
+    <!-- 本机验证本身不需要jquery 库，此处使用仅为了在demo中减少代码量 -->
+    <script src="//apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+    <!-- 引入oneloginjs  注意路径-->
+    <!-- stpe1: 引入JS -->
+    <script src="./oneloginh5.js"></script>
+</head>
+<body>
+    <h3>H5 一键登录 demo 演示</h3>
+    <p>点击一键登录体验 H5 一键登录</p>
+    <button id='test'>登录</button>
+    <p> <a href="https://docs.geetest.com/onelogin/deploy/Returncode#H5%E8%BF%94%E5%9B%9E%E7%A0%81" target="_blank">返回码查询</a></p>
+</body>
+</html>
+<script>
+    // 判断网络方法
+    function getNetworkType(){
+        var common_cell = ['cellular', '2g', '3g', '4g', '5g','3G/2G'];
+        var user_agent = navigator.userAgent.toLowerCase();
+        var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection ||{type: 'unknown'};
+        var type;
+        // 判断是否是微信内置浏览器
+        var isWeixin = /micromessenger/.test(user_agent);
+        if(isWeixin) {
+            if(user_agent.indexOf('nettype') !== -1){
+                type = user_agent.match(/nettype\/\w+/) ? user_agent.match(/nettype\/\w+/)[0] : 'nettype/unknow';
+                type = type.replace('nettype/', '')
+            }else {
+                var weixinType = {"network_type:wifi":"wifi","network_type:edge":"3G/2G","network_type:fail":"fail","network_type:wwan":"3G/2G"}
+                document.addEventListener("WeixinJSBridgeReady",function onBridgeReady(){
+                    WeixinJSBridge.invoke('getNetworkType',{},function(e){
+                        type = weixinType[e.err_msg];
+                    });
+                }); 
+            }
+        }else {
+        type = (connection && connection.type) || 'unknown';
+        }
+        // 对type 做统一处理
+        if(type && common_cell.indexOf(type) !== -1){
+            return 'cellular'
+        }else if ( type === 'wifi'){
+            return 'wifi'
+        }
+        return 'unknown'
+    }
+
+    // 初始化 onelogin API 
+    function initOl() {
+        let olinstance = new GOL({
+            app_id: 'appid', // 填写您在后台申请已审核通过的 appID
+            // logo:'https://mem.wostore.cn/h5netauth/resource/images/login/unicom_logo.png' // 此处是示例代码 
+        });
+        // step4: 成功失败回调
+        olinstance.onTokenFail((e)=> {
+            // 获取token失败 走降级处理 走短信或者其他登录方式 用户可根据业务做不同判断
+            console.log(e)
+        }).onTokenSuccess((e) => {
+            console.log(e) // e：获取token成功后返回object包含： {token: '', phone: '', process_id: ''}
+            const data = {
+                app_id: 'appid', // 填写您在后台申请已审核通过的 appID
+                ...e // 获取token成功后的数据 包含了 token, phoen ,process_id
+            }
+            $.ajax(
+                {
+                    method: 'POST',
+                    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                    url: '您服务端API校验接口',
+                    data: data, // 参数
+                    success:function(data){
+                        // 本机校验成功
+                    },
+                    error: function(res) {
+                        // 本机校验失败
+                    }
+                }
+            )
+        })
+        return olinstance
+    }
+    var initOlinstance;
+    // 可提前判断网络状态 决定是否初始化H5一键登录
+    var nettype = this.getNetworkType();
+    // 根据客户业务进行判断 网络判断返回 cellular、 wifi、 unknown
+    if (nettype === 'wifi') {
+        // 可选方案： 
+        // 1: 提示用户关闭wifi 进行体验
+        // 2: 直接降级走其他验证形式
+    } else {
+        // stpe3: 初始化H5一键登录
+        initOlinstance = this.initOl();
+    }
+    
+    // 模拟登录场景
+   $('#test').click(() => {
+       // 调用H5一键登录
+       if (!initOlinstance) {
+            // 降级走其他验证方式
+       }
+    //    step5: 调用H5 一键登录
+       initOlinstance && initOlinstance.gateway();
+   })
+
+</script>
