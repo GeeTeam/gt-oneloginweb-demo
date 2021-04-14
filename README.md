@@ -32,7 +32,13 @@
   });
 ```
 
-4 onTokenSuccess、onTokenFail 获取token参数后去校验是否为本机
+4 调用 ``gateway``方法 获取脱敏手机号拉起授权页面
+初始化后在需要使用H5一键登录时调用``gateway``方法，去获取脱敏手机号,并拉起授权页面。待用户填写手机号中间4位并点击登录后获取运营商`token`。 成功/失败将在onTokenSuccess、onTokenFail中返回
+
+```javascript
+ olInstance.gateway() 
+```
+5 ``onTokenSuccess``、``onTokenFail`` 为调用`gateway`方法回调。返回是否成功获取token结果， 获取成功后即可请求服务端校验是否为本机号码。
 
 ```javascript
  olInstance.onTokenSuccess(function(data){
@@ -55,11 +61,6 @@
   })
 ```
 
-5 在需要使用H5一键登录时调用gateway接口，去运营商请求获取token, 成功/失败将在onTokenSuccess、onTokenFail中返回
-
-```javascript
- olInstance.gateway() 
-```
 
  <span style="color:red">
  H5onelogindemo.html中是一个示例代码演示，详细演示了各个部署步骤和失败后降级处理方法。
@@ -67,8 +68,8 @@
 
 ### 方法说明
 
-**gateway(options)** 调用网关接口，去运营商获取token
->fn 调用网关接口 去运营商取号
+**gateway()** 获取脱敏手机号拉起授权页面
+>fn 获取脱敏手机号拉起授权页面
 
 **onTokenSuccess(fn)**运营商取号token成功返回
 
