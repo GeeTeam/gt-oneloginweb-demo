@@ -28,8 +28,9 @@
 </head>
 <body>
     <h3>H5 一键登录 demo 演示</h3>
-    <p>点击一键登录体验 H5 一键登录</p>
+    <p>点击登录体验 H5 一键登录</p>
     <button id='test'>登录</button>
+    <p>此处点击登录模拟场景， 接入方可根据业务需求，进行修改</p>
     <p> <a href="https://docs.geetest.com/onelogin/deploy/Returncode#H5%E8%BF%94%E5%9B%9E%E7%A0%81" target="_blank">返回码查询</a></p>
 </body>
 </html>
@@ -70,7 +71,8 @@
     function initOl() {
         let olinstance = new GOL({
             app_id: 'appid', // 填写您在后台申请已审核通过的 appID
-            // logo:'https://mem.wostore.cn/h5netauth/resource/images/login/unicom_logo.png' // 此处是示例代码 80*80 的圖片
+            app: '您APP名称 将会展示在授权页面'
+            // logo:'https://mem.wostore.cn/h5netauth/resource/images/login/unicom_logo.png', // 此处是示例代码
         });
         // step4: 成功失败回调
         olinstance.onTokenFail((e)=> {
@@ -93,6 +95,7 @@
                     },
                     error: function(res) {
                         // 本机校验失败
+                        olinstance.destory()
                     }
                 }
             )
@@ -112,7 +115,7 @@
         initOlinstance = this.initOl();
     }
     
-    // 模拟登录场景
+    // 模拟点击登录场景 可以在页面加载的时候判断网络状态后初始化就调用gateway方法
    $('#test').click(() => {
        // 调用H5一键登录
        if (!initOlinstance) {

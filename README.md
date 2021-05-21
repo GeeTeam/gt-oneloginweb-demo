@@ -15,7 +15,7 @@
 ```
 3 初始化OneLogin API对象
 <span style="color:red">
-为了避免影响认证的响应时间，可以先判断当前网络环境（可参考H5onelogindemo中的方法）再进行相对初始化；建议开发者在页面加载的时候判断网络环境并初始化。
+为了避免影响认证的响应时间，可以先判断当前网络环境（可参考demo中的方法）再进行相对初始化；建议开发者在页面加载的时候判断网络环境并初始化。
 </span>
 字段说明：
 
@@ -23,7 +23,20 @@
 | ------------ | ------------------------------------------------------------ |
 | app_id       | 客户在客户后台申请的。审核成功后生效                         |
 | timeout      | 超时时长                                                     |
-| logo         | 授权页面logo展示（绝对路径地址、尺寸80*80）                                                   |
+| logo         | 授权页面logo展示（绝对路径地址）float默认尺寸80*80 ； popup: 60*60 |
+| app | app名称 您app名称|
+|product|  授权页面弹出模式 （float、popup）|
+|logoWidth | 宽度可自定义 高度根据弹出模式默认不变 |
+| backText | 在float模式下生效 返回文案|
+|appfontSize| 授权描述文字大小 |
+| buttonWidth |  登录按钮的宽度 默认100% 传入百分比为宽度的百分比，也可传入具体的数值|
+|buttonHeight | 登录按钮高度 |
+| buttonFontSize |按钮文字大小 |
+|fontColor | 按钮文字颜色 |
+| fontColorActive | 按钮active 时颜色 |
+| buttonPosition | 按钮位置 取值 left/center/right |
+| buttonBackgroundNormal |按钮disabled背景颜色 |
+| buttonBackgroundActive |按钮active时背景颜色|
 
 ```javascript
  var olInstance = new GOL({            
