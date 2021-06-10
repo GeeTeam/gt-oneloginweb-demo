@@ -30,7 +30,7 @@
     <h3>H5 一键登录 demo 演示</h3>
     <p>点击登录体验 H5 一键登录</p>
     <button id='test'>登录</button>
-    <p>此处点击登录模拟场景， 接入方可根据业务需求，进行修改</p>
+    <p>此处为点击登录模拟场景， 接入方可根据业务需求，进行修改</p>
     <p> <a href="https://docs.geetest.com/onelogin/deploy/Returncode#H5%E8%BF%94%E5%9B%9E%E7%A0%81" target="_blank">返回码查询</a></p>
 </body>
 </html>
@@ -71,7 +71,6 @@
     function initOl() {
         let olinstance = new GOL({
             app_id: 'appid', // 填写您在后台申请已审核通过的 appID
-            app: '您APP名称 将会展示在授权页面'
             // logo:'https://mem.wostore.cn/h5netauth/resource/images/login/unicom_logo.png', // 此处是示例代码
         });
         // step4: 成功失败回调
@@ -79,10 +78,10 @@
             // 获取token失败 走降级处理 走短信或者其他登录方式 用户可根据业务做不同判断
             console.log(e)
         }).onTokenSuccess((e) => {
-            console.log(e) // e：获取token成功后返回object包含： {token: '', phone: '', process_id: ''}
+            console.log(e) // e：获取token成功后返回object包含： {token: '', phone: '', process_id: '', auth_code: ''//电信授权页面暂不支持以下授权页面自定义参数}
             const data = {
                 app_id: 'appid', // 填写您在后台申请已审核通过的 appID
-                ...e // 获取token成功后的数据 包含了 token, phoen ,process_id
+                ...e // 获取token成功后的数据 包含了 token, phoen ,process_id,auth_code(电信)
             }
             $.ajax(
                 {

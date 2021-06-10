@@ -19,6 +19,8 @@
 </span>
 字段说明：
 
+电信授权页面暂不支持以下授权页面自定义参数
+
 | 字段         | 说明                                                         |
 | ------------ | ------------------------------------------------------------ |
 | app_id       | 客户在客户后台申请的。审核成功后生效                         |
@@ -55,7 +57,7 @@
 
 ```javascript
  olInstance.onTokenSuccess(function(data){
-    // data 参数包含 token、phone、process_id
+    // data 参数包含 token、phone、process_id等其他参数 可直接加上其他参数一起提交给服务端
     // 调用服务端校验接口， 以下是伪代码示例
     axios({
       method: 'POST',
@@ -86,7 +88,7 @@
 
 **onTokenSuccess(fn)**运营商取号token成功返回
 
->fn 成功返回函数，返回函数参数是Object, 结构：{ process_id: 'xxxx', phone:'', token: 'abc' }。
+>fn 成功返回函数，返回函数参数是Object, 结构：{ process_id: 'xxxx', phone:'', token: 'abc', auth_code: ''//此参数只有运营商为电信的时候返回 }。
 
 **onTokenFail (fn)** 运营商取号token失败返回
 
